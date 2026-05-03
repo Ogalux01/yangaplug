@@ -5,112 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong Game</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: black;
-            margin: 0;
-        }
         canvas {
-            border: 1px solid white;
+            background: #eee;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <canvas id="pong" width="800" height="400"></canvas>
+    <h1>Pong Game</h1>
+    <canvas id="pongCanvas" width="800" height="400"></canvas>
+    <h3>Score: <span id="score">0</span></h3>
+    <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
     <script>
-        const canvas = document.getElementById('pong');
+        const canvas = document.getElementById('pongCanvas');
         const context = canvas.getContext('2d');
+        let playerScore = 0, aiScore = 0;
+        let paddleHeight = 100, paddleY = 150;
+        let ballX = canvas.width / 2, ballY = canvas.height / 2, ballSpeedX = 5, ballSpeedY = 2;
 
-        // Create the pong paddle
-        const paddleWidth = 10;
-        const paddleHeight = 100;
-        let playerPaddle = { x: 0, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight, color: '#00FF00', dy: 0 };
-        let aiPaddle = { x: canvas.width - paddleWidth, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight, color: '#FF0000', dy: 0 };
+        function draw() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawPaddle();
+            drawBall();
+            drawScore();
+            moveBall();
+            requestAnimationFrame(draw);
+        }
 
-        // Create the pong ball
-        const ballRadius = 10;
-        let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: ballRadius, speed: 5, dx: 5, dy: 5 };
+        function drawPaddle() {
+            context.fillStyle = '#333';
+            context.fillRect(10, paddleY, 10, paddleHeight);
+        }
 
-        // Score
-        let playerScore = 0;
-        let aiScore = 0;
+        function drawBall() {
+            context.fillStyle = '#333';
+            context.beginPath();
+            context.arc(ballX, ballY, 10, 0, Math.PI * 2, false);
+            context.fill();
+        }
 
-        // Event listeners for paddle movement
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowUp') playerPaddle.dy = -5;
-            if (event.key === 'ArrowDown') playerPaddle.dy = 5;
-        });
+        function drawScore() {
+            document.getElementById('score').innerText = playerScore;
+        }
 
-        document.addEventListener('keyup', (event) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') playerPaddle.dy = 0;
-        });
-
-        // Game loop
-        function gameLoop() {
-            // Move paddles
-            playerPaddle.y += playerPaddle.dy;
-            aiPaddle.y += (ball.y - (aiPaddle.y + aiPaddle.height / 2)) * 0.1;
-
-            // Ball movement
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-
-            // Ball wall collision
-            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-                ball.dy *= -1;
+        function moveBall() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+            if(ballY < 0 || ballY > canvas.height) {
+                ballSpeedY = -ballSpeedY;
             }
-
-            // Ball paddle collision
-            if (ball.x - ball.radius < playerPaddle.x + playerPaddle.width && ball.y > playerPaddle.y && ball.y < playerPaddle.y + playerPaddle.height) {
-                ball.dx *= -1;
-                ball.x = playerPaddle.x + playerPaddle.width + ball.radius;
-            }
-            if (ball.x + ball.radius > aiPaddle.x && ball.y > aiPaddle.y && ball.y < aiPaddle.y + aiPaddle.height) {
-                ball.dx *= -1;
-                ball.x = aiPaddle.x - ball.radius;
-            }
-
-            // Scoring
-            if (ball.x + ball.radius < 0) {
-                aiScore++;
-                resetBall();
-            } else if (ball.x - ball.radius > canvas.width) {
+            if(ballX < 0) {
                 playerScore++;
                 resetBall();
             }
-
-            // Clear canvas
-            context.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw paddles
-            context.fillStyle = playerPaddle.color;
-            context.fillRect(playerPaddle.x, playerPaddle.y, playerPaddle.width, playerPaddle.height);
-            context.fillStyle = aiPaddle.color;
-            context.fillRect(aiPaddle.x, aiPaddle.y, aiPaddle.width, aiPaddle.height);
-
-            // Draw ball
-            context.fillStyle = 'white';
-            context.beginPath();
-            context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            context.fill();
-
-            // Draw scores
-            context.fillText('Player: ' + playerScore, 50, 50);
-            context.fillText('AI: ' + aiScore, canvas.width - 100, 50);
-
-            requestAnimationFrame(gameLoop);
         }
 
         function resetBall() {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.dx *= -1;
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
         }
 
-        gameLoop();
+        // Touch control support
+        let touchStartY = 0;
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            let touchY = e.touches[0].clientY;
+            let touchDiff = touchY - touchStartY;
+            paddleY += touchDiff;
+            touchStartY = touchY;
+
+            // Keep paddle within canvas bounds
+            if (paddleY < 0) paddleY = 0;
+            if (paddleY > canvas.height - paddleHeight) paddleY = canvas.height - paddleHeight;
+        });
+
+        canvas.addEventListener('touchend', () => {
+            // Optional: handle touchend
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp') {
+                paddleY -= 20;
+            } else if (e.key === 'ArrowDown') {
+                paddleY += 20;
+            }
+
+            // Keep paddle within canvas bounds
+            if (paddleY < 0) paddleY = 0;
+            if (paddleY > canvas.height - paddleHeight) paddleY = canvas.height - paddleHeight;
+        });
+
+        draw();
     </script>
 </body>
 </html>
